@@ -1,0 +1,348 @@
+/* CSS Atualizado para Posições Fixas das Tabelas */
+#layout_onibus_wrapper {
+    display: flex; /* [cite: 20] */
+    flex-direction: column; /* Estrutura vertical do layout [cite: 20] */
+    align-items: center; /* [cite: 21] */
+    /* justify-content: center; */
+    /* Centraliza o conteúdo */
+    position: relative; /* [cite: 22] */
+    width: auto; /* [cite: 22] */
+    max-width: 350px;
+    height: 700px;
+    background-image: url('images/img-onibus-sem-motorista.png');
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: contain;
+    border: 1px solid #ccc; /* [cite: 23] */
+    margin: 20px auto; /* [cite: 23] */
+    padding-top: 80px;
+    box-sizing: border-box;
+}
+
+/* Container para as tabelas com posições absolutas */
+.tabelas-container {
+    position: relative; /* [cite: 24] */
+    width: 200%; /* [cite: 24] */
+    display: flex;
+    justify-content: center;
+}
+
+/* Posição fixa para tabela esquerda */
+#tabela-esquerda {
+    position: absolute; /* [cite: 25] */
+    left: 50%; /* [cite: 25] */
+    transform: translateX(-100%); /* Move para a esquerda do ponto central [cite: 25] */
+    margin-right: 7.5px; /* [cite: 26] */
+    /* Metade do corredor */
+    z-index: 2; /* [cite: 27] */
+}
+
+/* Posição fixa para tabela direita */
+#tabela-direita {
+    position: absolute; /* [cite: 28] */
+    left: 50%; /* [cite: 28] */
+    margin-left: 7.5px; /* Metade do corredor [cite: 28] */
+    z-index: 2; /* [cite: 29] */
+}
+
+/* Corredor agora é apenas visual */
+.corredor-central-spacer {
+    width: 15px; /* [cite: 30] */
+    height: 1px; /* Apenas para referência [cite: 30] */
+}
+
+table.poltronas-editaveis {
+    border-collapse: separate; /* [cite: 31] */
+    border-spacing: 4px; /* [cite: 31] */
+    width: auto;
+    vertical-align: top;
+}
+
+table.poltronas-editaveis td {
+    width: 35px; /* [cite: 32] */
+    height: 35px; /* [cite: 32] */
+    text-align: center;
+    vertical-align: middle;
+    /* border: 1px solid #999; [cite: 33] */
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer; /* [cite: 34] */
+    user-select: none;
+    box-sizing: border-box;
+    position: relative;
+}
+
+td.seat.habilitado {
+    background-color: #007bff; /* [cite: 35] */
+}
+
+td.seat.habilitado:hover {
+    background-color: #0056b3; /* [cite: 36] */
+}
+
+td.seat.desabilitado {
+    background-color: red; /* [cite: 37] */
+}
+
+td.seat.desabilitado:hover {
+    background-color: #cc0000; /* [cite: 38] */
+}
+
+td.seat.ocupado {
+    background-color: grey; /* [cite: 39] */
+    cursor: not-allowed;
+    border-color: #666;
+    color: #eee;
+}
+
+td.espaco {
+    border: none; /* [cite: 40] */
+    background-color: transparent; /* [cite: 40] */
+    cursor: pointer; /* [cite: 40] */
+}
+
+td.coluna-porta {
+    width: auto; /* [cite: 41] */
+    min-width: 25px; /* [cite: 41] */
+    border: none;
+    background-color: transparent;
+    vertical-align: middle;
+    text-align: left;
+    padding: 0 2px; /* [cite: 42] */
+}
+
+.add-door-btn {
+    background: #f0ad4e; /* [cite: 43] */
+    color: white; /* [cite: 43] */
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0; /* [cite: 44] */
+    vertical-align: middle;
+    display: inline-block;
+    margin: 1px;
+}
+
+.add-door-btn.door-1 {
+    background: #f0ad4e; /* [cite: 45] */
+}
+
+.add-door-btn.door-2 {
+    background: #5bc0de; /* [cite: 46] */
+}
+
+.add-door-btn:hover {
+    filter: brightness(0.9); /* [cite: 47] */
+}
+
+/* Modificações específicas para a linha de porta */
+#tabela-direita tr.door-row {
+    background-color: transparent; /* [cite: 48] */
+}
+
+#tabela-direita tr.door-row td {
+    height: 25px; /* [cite: 49] */
+    vertical-align: middle;
+    padding: 2px;
+}
+
+/* Configuração específica para portas dentro da tabela fixa */
+#tabela-direita tr.door-row td.door-space-left {
+    width: 5px !important; /* [cite: 50] */
+    padding: 0 !important; /* [cite: 50] */
+    border: none;
+    background-color: transparent;
+    float: none; /* Evita comportamentos de flutuação */
+}
+
+#tabela-direita tr.door-row td.door-space-right {
+    border: none; /* [cite: 51] */
+    background-color: transparent; /* [cite: 51] */
+}
+
+#tabela-direita tr.door-row td.door-entry {
+    background-color: #e0e0e0; /* [cite: 52] */
+    color: #333; /* [cite: 52] */
+    text-align: center;
+    font-weight: bold;
+    border: 1px dashed #999;
+    cursor: default;
+    font-size: 10px;
+    position: relative; /* [cite: 53] */
+    /* Evita que afete o layout */
+}
+
+table.poltronas-editaveis td.seat > span.seat-number {
+    display: inline-block; /* [cite: 54] */
+    pointer-events: auto; /* Garante que o clique seja capturado [cite: 54] */
+    cursor: pointer; /* [cite: 55] */
+}
+
+.legenda {
+    margin-top: 0; /* [cite: 56] */
+    padding: 15px; /* [cite: 56] */
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    text-align: left;
+    display: inline-block;
+    width: 100%;
+    border-radius: 5px; /* [cite: 57] */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+.legenda strong {
+    display: block; /* [cite: 58] */
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.legenda div {
+    margin-bottom: 6px; /* [cite: 59] */
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+}
+
+.legenda span {
+    display: inline-flex; /* [cite: 60] */
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #aaa;
+    margin-right: 8px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 18px; /* [cite: 61] */
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+    box-sizing: border-box;
+}
+
+.legenda .leg-habilitado {
+    background-color: #007bff; /* [cite: 62] */
+    border-color: #0056b3; /* [cite: 62] */
+}
+
+.legenda .leg-desabilitado {
+    background-color: red; /* [cite: 63] */
+    border-color: #b20000; /* [cite: 63] */
+}
+
+.legenda .leg-ocupado {
+    background-color: grey; /* [cite: 64] */
+    border-color: #555; /* [cite: 64] */
+}
+
+.legenda .leg-espaco {
+    border: 1px dashed #ccc; /* [cite: 65] */
+    background-color: #fff; /* [cite: 65] */
+    width: auto;
+    padding: 0 5px;
+    color: #555;
+}
+
+.legenda .leg-novo {
+    border: 1px solid #999; /* [cite: 66] */
+    background-color: #fff; /* [cite: 66] */
+    color: #999;
+    width: auto;
+    padding: 0 5px;
+}
+
+.legenda .leg-door-1 {
+    background-color: #f0ad4e; /* [cite: 67] */
+    border-radius: 50%; /* [cite: 67] */
+    border-color: #c67605; /* [cite: 67] */
+}
+
+.legenda .leg-door-2 {
+    background-color: #5bc0de; /* [cite: 68] */
+    border-radius: 50%; /* [cite: 68] */
+    border-color: #318a9e; /* [cite: 68] */
+}
+
+.legenda .leg-botao-porta {
+    border: none; /* [cite: 69] */
+    background: none; /* [cite: 69] */
+    width: auto;
+    color: black;
+    font-size: 16px;
+}
+
+#seat-context-menu {
+    position: absolute; /* [cite: 70] */
+    display: none; /* [cite: 70] */
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    z-index: 1000; /* [cite: 71] */
+    min-width: 120px; /* [cite: 71] */
+}
+
+#seat-context-menu button {
+    display: block; /* [cite: 72] */
+    width: 100%; /* [cite: 72] */
+    margin-bottom: 3px;
+    padding: 3px 8px;
+    font-size: 12px;
+    text-align: left;
+    border: none;
+    background-color: #f8f9fa;
+    cursor: pointer; /* [cite: 73] */
+}
+
+#seat-context-menu button:hover {
+    background-color: #e2e6ea; /* [cite: 74] */
+}
+
+#seat-context-menu button:last-child {
+    margin-bottom: 0; /* [cite: 75] */
+}
+
+#remove-seat-btn {
+    color: red; /* [cite: 76] */
+}
+
+.seat-actions {
+    margin-top: 5px; /* [cite: 77] */
+    display: flex; /* [cite: 77] */
+    gap: 5px;
+    justify-content: center;
+}
+
+.seat-actions button {
+    padding: 2px 5px; /* [cite: 78] */
+    font-size: 14px; /* [cite: 78] */
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 20px;
+    background-color: #007bff; /* [cite: 79] */
+    color: white; /* [cite: 79] */
+}
+
+.seat-actions button:hover {
+    background-color: #0056b3; /* [cite: 80] */
+}
+
+.seat-actions .btn-remove-seat {
+    background-color: red; /* [cite: 81] */
+}
+
+.seat-actions .btn-remove-seat:hover {
+    background-color: #b20000; /* [cite: 82] */
+}
