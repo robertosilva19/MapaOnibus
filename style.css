@@ -1,120 +1,162 @@
 /* CSS Atualizado para Posições Fixas das Tabelas */
 #layout_onibus_wrapper {
-    display: flex; /* [cite: 20] */
-    flex-direction: column; /* Estrutura vertical do layout [cite: 20] */
-    align-items: center; /* [cite: 21] */
+    display: flex;
+    flex-direction: column; /* Estrutura vertical do layout */
+    align-items: center;
     /* justify-content: center; */
     /* Centraliza o conteúdo */
-    position: relative; /* [cite: 22] */
-    width: auto; /* [cite: 22] */
+    position: relative;
+    width: auto;
     max-width: 350px;
     height: 700px;
-    background-image: url('Imagens/onibus_sem_motorista.jpeg'); /* [cite: 23] */
+    background-image: url('imagens/onibus_sem_motorista.jpeg'); /* Corrigido para 'imagens/' minúsculo e .png */
     background-repeat: no-repeat;
     background-position: center top;
     background-size: contain;
-    border: 1px solid #ccc; /* [cite: 23] */
-    margin: 20px auto; /* [cite: 23] */
+    border: 1px solid #ccc;
+    margin: 20px auto;
     padding-top: 80px;
     box-sizing: border-box;
 }
 
 /* Container para as tabelas com posições absolutas */
 .tabelas-container {
-    position: relative; /* [cite: 24] */
-    width: 200%; /* [cite: 24] */
+    position: relative;
+    width: 200%;
     display: flex;
     justify-content: center;
 }
 
 /* Posição fixa para tabela esquerda */
 #tabela-esquerda {
-    position: absolute; /* [cite: 25] */
-    left: 50%; /* [cite: 25] */
-    transform: translateX(-100%); /* Move para a esquerda do ponto central [cite: 25] */
-    margin-right: 7.5px; /* [cite: 26] */
-    /* Metade do corredor */
-    z-index: 2; /* [cite: 27] */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-100%); /* Move para a esquerda do ponto central */
+    margin-right: 7.5px; /* Metade do corredor */
+    z-index: 2;
 }
 
 /* Posição fixa para tabela direita */
 #tabela-direita {
-    position: absolute; /* [cite: 28] */
-    left: 50%; /* [cite: 28] */
-    margin-left: 7.5px; /* Metade do corredor [cite: 28] */
-    z-index: 2; /* [cite: 29] */
+    position: absolute;
+    left: 50%;
+    margin-left: 7.5px; /* Metade do corredor */
+    z-index: 2;
 }
 
 /* Corredor agora é apenas visual */
 .corredor-central-spacer {
-    width: 15px; /* [cite: 30] */
-    height: 1px; /* Apenas para referência [cite: 30] */
+    width: 15px;
+    height: 1px; /* Apenas para referência */
 }
 
 table.poltronas-editaveis {
-    border-collapse: separate; /* [cite: 31] */
-    border-spacing: 4px; /* [cite: 31] */
+    border-collapse: separate;
+    border-spacing: 4px;
     width: auto;
     vertical-align: top;
 }
 
+/* Estilo geral dos assentos - assegura que o número apareça sobre a imagem */
 table.poltronas-editaveis td {
-    width: 35px; /* [cite: 32] */
-    height: 35px; /* [cite: 32] */
+    width: 35px;
+    height: 35px;
     text-align: center;
     vertical-align: middle;
-    /* border: 1px solid #999; [cite: 33] */
-    color: white;
+    color: white; /* Cor padrão do número do assento, pode ser ajustada por classe */
     font-weight: bold;
     font-size: 12px;
-    cursor: pointer; /* [cite: 34] */
+    cursor: pointer;
     user-select: none;
     box-sizing: border-box;
-    position: relative;
+    position: relative; /* Crucial para posicionar o conteúdo (número, botões) sobre a imagem de fundo */
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; /* Faz a imagem cobrir toda a área do TD */
+    border-radius: 5px; /* Adiciona bordas arredondadas para um visual mais suave */
+    overflow: hidden; /* Garante que a imagem arredondada não vaze */
 }
 
+/* Assento LIVRE (habilitado) - usa assento_livre.jpeg */
 td.seat.habilitado {
-    background-color: #007bff; /* [cite: 35] */
+    background-image: url('imagens/assento_livre.jpeg');
+    background-color: transparent; /* Torna o fundo transparente para mostrar a imagem completamente */
+    color: black; /* Ajusta a cor do texto para melhor contraste na imagem */
 }
 
 td.seat.habilitado:hover {
-    background-color: #0056b3; /* [cite: 36] */
+    filter: brightness(0.9); /* Escurece a imagem ligeiramente no hover */
 }
 
+/* Assento DESABILITADO - mantém o fundo vermelho ou pode ter uma imagem específica */
 td.seat.desabilitado {
-    background-color: red; /* [cite: 37] */
+    background-color: red;
+    background-image: none; /* Garante que nenhuma imagem seja exibida, se não for o caso */
+    color: white;
 }
 
 td.seat.desabilitado:hover {
-    background-color: #cc0000; /* [cite: 38] */
+    background-color: #cc0000;
 }
 
+/* Assento OCUPADO - usa assento_ocupado.jpeg */
 td.seat.ocupado {
-    background-color: grey; /* [cite: 39] */
+    background-image: url('imagens/assento_ocupado.jpeg');
+    background-color: transparent; /* Torna o fundo transparente para mostrar a imagem completamente */
     cursor: not-allowed;
     border-color: #666;
-    color: #eee;
+    color: white; /* Ajusta a cor do texto para melhor contraste na imagem */
 }
 
+/* Espaço VAZIO (onde um assento pode ser adicionado) - usa assento_vago.jpeg */
 td.espaco {
-    border: none; /* [cite: 40] */
-    background-color: transparent; /* [cite: 40] */
-    cursor: pointer; /* [cite: 40] */
+    border: none;
+    background-color: transparent; /* Transparente para mostrar a imagem de fundo do ônibus ou apenas a imagem de vago */
+    background-image: url('imagens/assento_vago.jpeg');
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    border-radius: 5px; /* Bordas arredondadas */
+    /* box-shadow: inset  0 0 0 1px #ccc; /* Opcional: Adiciona uma borda sutil para demarcar o espaço */
 }
+
+/* Garante que o número do assento seja visível sobre a imagem */
+/* Esta regra se aplica APENAS a TDs com classe 'seat' (assentos existentes) */
+table.poltronas-editaveis td.seat > span.seat-number {
+    display: flex; /* Para centralizar o número */
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute; /* Posiciona sobre a imagem de fundo */
+    top: 0;
+    left: 0;
+    z-index: 10; /* AUMENTADO O Z-INDEX para garantir visibilidade */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* Sombra mais forte para melhorar a legibilidade do texto */
+    color: black; /* Força a cor do número do assento (ajuste conforme a imagem) */
+}
+
+/* Esconde o número do assento para espaços vazios */
+/* Esta regra se aplica a TDs com classe 'espaco' (slots vazios) */
+table.poltronas-editaveis td.espaco > span.seat-number {
+    display: none; /* Não exibe o número para slots vazios */
+}
+
 
 td.coluna-porta {
-    width: auto; /* [cite: 41] */
-    min-width: 25px; /* [cite: 41] */
+    width: auto;
+    min-width: 25px;
     border: none;
     background-color: transparent;
     vertical-align: middle;
     text-align: left;
-    padding: 0 2px; /* [cite: 42] */
+    padding: 0 2px;
 }
 
 .add-door-btn {
-    background: #f0ad4e; /* [cite: 43] */
-    color: white; /* [cite: 43] */
+    background: #f0ad4e;
+    color: white;
     border: none;
     border-radius: 50%;
     width: 20px;
@@ -123,95 +165,141 @@ td.coluna-porta {
     line-height: 18px;
     text-align: center;
     cursor: pointer;
-    padding: 0; /* [cite: 44] */
+    padding: 0;
     vertical-align: middle;
     display: inline-block;
     margin: 1px;
 }
 
 .add-door-btn.door-1 {
-    background: #f0ad4e; /* [cite: 45] */
+    background: #f0ad4e;
 }
 
 .add-door-btn.door-2 {
-    background: #5bc0de; /* [cite: 46] */
+    background: #5bc0de;
 }
 
 .add-door-btn:hover {
-    filter: brightness(0.9); /* [cite: 47] */
+    filter: brightness(0.9);
 }
 
 /* Modificações específicas para a linha de porta */
 #tabela-direita tr.door-row {
-    background-color: transparent; /* [cite: 48] */
+    background-color: transparent;
 }
 
 #tabela-direita tr.door-row td {
-    height: 25px; /* [cite: 49] */
+    height: 25px;
     vertical-align: middle;
     padding: 2px;
 }
 
 /* Configuração específica para portas dentro da tabela fixa */
 #tabela-direita tr.door-row td.door-space-left {
-    width: 5px !important; /* [cite: 50] */
-    padding: 0 !important; /* [cite: 50] */
+    width: 5px !important;
+    padding: 0 !important;
     border: none;
     background-color: transparent;
     float: none; /* Evita comportamentos de flutuação */
 }
 
 #tabela-direita tr.door-row td.door-space-right {
-    border: none; /* [cite: 51] */
-    background-color: transparent; /* [cite: 51] */
+    border: none;
+    background-color: transparent;
 }
 
 #tabela-direita tr.door-row td.door-entry {
-    background-color: #e0e0e0; /* [cite: 52] */
-    color: #333; /* [cite: 52] */
+    background-color: #e0e0e0;
+    color: #333;
     text-align: center;
     font-weight: bold;
     border: 1px dashed #999;
     cursor: default;
     font-size: 10px;
-    position: relative; /* [cite: 53] */
+    position: relative;
     /* Evita que afete o layout */
 }
 
-table.poltronas-editaveis td.seat > span.seat-number {
-    display: inline-block; /* [cite: 54] */
-    pointer-events: auto; /* Garante que o clique seja capturado [cite: 54] */
-    cursor: pointer; /* [cite: 55] */
+/* Ajusta a visibilidade e posição das ações do assento (botões + e -) */
+.seat-actions {
+    position: absolute; /* Posiciona sobre a imagem de fundo e o número */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background-color: rgba(0,0,0,0.4); /* Overlay semi-transparente para os botões */
+    opacity: 0; /* Escondido por padrão */
+    transition: opacity 0.2s ease-in-out; /* Transição suave para o hover */
+    z-index: 20; /* AUMENTADO O Z-INDEX para garantir que os botões fiquem sobre o número */
+    border-radius: 5px; /* Bordas arredondadas */
+}
+
+/* Mostra as ações do assento no hover */
+td.seat:hover .seat-actions,
+td.espaco:hover .seat-actions {
+    opacity: 1;
+}
+
+/* Ajusta o tamanho dos botões de ação */
+.seat-actions button {
+    padding: 2px 5px;
+    font-size: 10px; /* Reduz o tamanho da fonte para caber melhor */
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+    width: 20px; /* Largura menor */
+    height: 20px; /* Altura menor */
+    text-align: center;
+    line-height: 16px; /* Ajusta line-height para centralização vertical */
+    background-color: #007bff;
+    color: white;
+}
+
+.seat-actions button:hover {
+    background-color: #0056b3;
+}
+
+.seat-actions .btn-remove-seat {
+    background-color: red;
+}
+
+.seat-actions .btn-remove-seat:hover {
+    background-color: #b20000;
 }
 
 .legenda {
-    margin-top: 0; /* [cite: 56] */
-    padding: 15px; /* [cite: 56] */
+    margin-top: 0;
+    padding: 15px;
     border: 1px solid #ddd;
     background-color: #f9f9f9;
     text-align: left;
     display: inline-block;
     width: 100%;
-    border-radius: 5px; /* [cite: 57] */
+    border-radius: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 
 .legenda strong {
-    display: block; /* [cite: 58] */
+    display: block;
     margin-bottom: 10px;
     font-size: 1.1em;
 }
 
 .legenda div {
-    margin-bottom: 6px; /* [cite: 59] */
+    margin-bottom: 6px;
     font-size: 13px;
     display: flex;
     align-items: center;
 }
 
 .legenda span {
-    display: inline-flex; /* [cite: 60] */
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     width: 20px;
@@ -220,129 +308,101 @@ table.poltronas-editaveis td.seat > span.seat-number {
     margin-right: 8px;
     vertical-align: middle;
     text-align: center;
-    line-height: 18px; /* [cite: 61] */
+    line-height: 18px;
     font-size: 10px;
     font-weight: bold;
     color: white;
     box-sizing: border-box;
 }
 
+/* Ajustes para a legenda para refletir os novos estilos visuais */
 .legenda .leg-habilitado {
-    background-color: #007bff; /* [cite: 62] */
-    border-color: #0056b3; /* [cite: 62] */
+    background-image: url('imagens/assento_livre.jpeg');
+    background-size: cover;
+    background-color: transparent;
+    border: 1px solid #ccc; /* Adiciona borda para consistência na legenda */
+    border-radius: 3px; /* Pequenas bordas arredondadas */
 }
-
 .legenda .leg-desabilitado {
-    background-color: red; /* [cite: 63] */
-    border-color: #b20000; /* [cite: 63] */
+    background-image: none; /* Sem imagem para desabilitado na legenda */
+    background-color: red;
+    border-radius: 3px;
 }
-
 .legenda .leg-ocupado {
-    background-color: grey; /* [cite: 64] */
-    border-color: #555; /* [cite: 64] */
+    background-image: url('imagens/assento_ocupado.jpeg');
+    background-size: cover;
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 3px;
 }
-
 .legenda .leg-espaco {
-    border: 1px dashed #ccc; /* [cite: 65] */
-    background-color: #fff; /* [cite: 65] */
-    width: auto;
-    padding: 0 5px;
-    color: #555;
+    background-image: url('imagens/assento_vago.jpeg');
+    background-size: cover;
+    background-color: transparent;
+    border: 1px solid #ccc; /* Adiciona borda para consistência na legenda */
+    color: #555; /* Cor do texto, se houver */
+    border-radius: 3px;
 }
 
 .legenda .leg-novo {
-    border: 1px solid #999; /* [cite: 66] */
-    background-color: #fff; /* [cite: 66] */
+    border: 1px solid #999;
+    background-color: #fff;
     color: #999;
     width: auto;
     padding: 0 5px;
 }
 
 .legenda .leg-door-1 {
-    background-color: #f0ad4e; /* [cite: 67] */
-    border-radius: 50%; /* [cite: 67] */
-    border-color: #c67605; /* [cite: 67] */
+    background-color: #f0ad4e;
+    border-radius: 50%;
+    border-color: #c67605;
 }
 
 .legenda .leg-door-2 {
-    background-color: #5bc0de; /* [cite: 68] */
-    border-radius: 50%; /* [cite: 68] */
-    border-color: #318a9e; /* [cite: 68] */
+    background-color: #5bc0de;
+    border-radius: 50%;
+    border-color: #318a9e;
 }
 
 .legenda .leg-botao-porta {
-    border: none; /* [cite: 69] */
-    background: none; /* [cite: 69] */
+    border: none;
+    background: none;
     width: auto;
     color: black;
     font-size: 16px;
 }
 
 #seat-context-menu {
-    position: absolute; /* [cite: 70] */
-    display: none; /* [cite: 70] */
+    position: absolute;
+    display: none;
     background-color: white;
     border: 1px solid #ccc;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     padding: 5px;
-    z-index: 1000; /* [cite: 71] */
-    min-width: 120px; /* [cite: 71] */
+    z-index: 1000;
+    min-width: 120px;
 }
 
 #seat-context-menu button {
-    display: block; /* [cite: 72] */
-    width: 100%; /* [cite: 72] */
+    display: block;
+    width: 100%;
     margin-bottom: 3px;
     padding: 3px 8px;
     font-size: 12px;
     text-align: left;
     border: none;
     background-color: #f8f9fa;
-    cursor: pointer; /* [cite: 73] */
+    cursor: pointer;
 }
 
 #seat-context-menu button:hover {
-    background-color: #e2e6ea; /* [cite: 74] */
+    background-color: #e2e6ea;
 }
 
 #seat-context-menu button:last-child {
-    margin-bottom: 0; /* [cite: 75] */
+    margin-bottom: 0;
 }
 
 #remove-seat-btn {
-    color: red; /* [cite: 76] */
-}
-
-.seat-actions {
-    margin-top: 5px; /* [cite: 77] */
-    display: flex; /* [cite: 77] */
-    gap: 5px;
-    justify-content: center;
-}
-
-.seat-actions button {
-    padding: 2px 5px; /* [cite: 78] */
-    font-size: 14px; /* [cite: 78] */
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    text-align: center;
-    line-height: 20px;
-    background-color: #007bff; /* [cite: 79] */
-    color: white; /* [cite: 79] */
-}
-
-.seat-actions button:hover {
-    background-color: #0056b3; /* [cite: 80] */
-}
-
-.seat-actions .btn-remove-seat {
-    background-color: red; /* [cite: 81] */
-}
-
-.seat-actions .btn-remove-seat:hover {
-    background-color: #b20000; /* [cite: 82] */
+    color: red;
 }

@@ -83,19 +83,18 @@ function render_seat_td_separado($numAssento, $poltronasMapeadas, $globalColumnI
         elseif ($globalColumnIndex === 4) $classes[] = 'assento-janela-direita';
 
         echo "<td class=\"" . implode(' ', $classes) . "\" data-seat-number=\"" . $poltrona['numero'] . "\">";
-        echo "<span class='seat-number'>" . ($poltrona['numero'] ?? '??') . "</span>";
+        echo "<span class='seat-number'>" . ($poltrona['numero'] ?? '??') . "</span>"; // Sempre presente para assentos
         // Adiciona botões de ação ao lado do assento
         echo "<div class='seat-actions'>";
-        // CORREÇÃO: Mudar type='submit' para type='button'
         echo "<button type='button' class='btn-remove-seat' data-seat-number='" . $poltrona['numero'] . "' title='Remover Assento'>-</button>";
         echo "<button type='button' class='btn-add-seat' data-seat-number='" . $poltrona['numero'] . "' title='Adicionar Assento'>+</button>";
         echo "</div>";
         echo "</td>";
     } else {
-        // Para espaços vazios, também precisamos dos botões para adicionar
-        echo "<td class=\"espaco\">";
+        // Para espaços vazios, o span.seat-number não é necessário.
+        // O JS vai gerá-lo ao adicionar um assento.
+        echo "<td class=\"espaco\">"; // Apenas a classe espaco
         echo "<div class='seat-actions'>";
-        // CORREÇÃO: Mudar type='submit' para type='button'
         echo "<button type='button' class='btn-add-seat' title='Adicionar Assento'>+</button>";
         echo "<button type='button' class='btn-remove-seat' title='Remover Assento'>-</button>";
         echo "</div>";
@@ -124,13 +123,18 @@ function render_seat_td_separado($numAssento, $poltronasMapeadas, $globalColumnI
                     <div class="row justify-content-center mb-4">
                         <div class="col-md-8 col-lg-6">
                             <label for="nome_mapa_input" class="form-label fw-bold">Nome do Mapa:</label>
-                            <input type="text"
-                                class="form-control form-control-lg"
-                                id="nome_mapa_input"
-                                name="nome_mapa"
-                                placeholder="Ex: Leito DD 64 (Placa XXX-0000)"
-                                value="<?php echo htmlspecialchars($nomeMapaAtual ?? ''); ?>"
-                                required>
+                            <div class="input-group">
+                                <input type="text"
+                                    class="form-control form-control-lg"
+                                    id="nome_mapa_input"
+                                    name="nome_mapa"
+                                    placeholder="Ex: Leito DD 64 (Placa XXX-0000)"
+                                    value="<?php echo htmlspecialchars($nomeMapaAtual ?? ''); ?>"
+                                    required
+                                    autocomplete="off"> <button type="button" class="btn btn-secondary btn-lg" id="btn-load-map" title="Carregar Mapa Salvo">Carregar Mapa</button>
+                            </div>
+                            <div id="map-list-dropdown" class="dropdown-menu" style="width: 100%; max-height: 200px; overflow-y: auto;">
+                                </div>
                         </div>
                     </div>
                     <input type="hidden" name="layout_id" id="layout_id_input" value="<?php echo htmlspecialchars($currentLayoutId ?? ''); ?>">
@@ -138,7 +142,8 @@ function render_seat_td_separado($numAssento, $poltronasMapeadas, $globalColumnI
                     <input type="hidden" name="door_locations" id="door_locations_input" value="<?php echo htmlspecialchars($jsonPortasSalvas); ?>">
                     <input type="hidden" name="candidatos_porta1" id="candidatos_porta1_input" value="<?php echo htmlspecialchars(json_encode($candidatosPorta1)); ?>">
                     <input type="hidden" name="candidatos_porta2" id="candidatos_porta2_input" value="<?php echo htmlspecialchars(json_encode($candidatosPorta2)); ?>">
-                    <input type="hidden" name="save_action" id="save_action_input" value="update"> <div id="seat-context-menu">
+                    <input type="hidden" name="save_action" id="save_action_input" value="update">
+                    <div id="seat-context-menu">
                         <button type="button" id="toggle-status-btn">Habilitar/Desabilitar</button>
                         <button type="button" id="remove-seat-btn">Remover Assento</button>
                         <button type="button" id="cancel-menu-btn" style="margin-top: 5px; color: grey;">Cancelar</button>
@@ -229,5 +234,3 @@ function render_seat_td_separado($numAssento, $poltronasMapeadas, $globalColumnI
 </body>
 
 </html>
-<?php
-// Fim do arquivo index.php

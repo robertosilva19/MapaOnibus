@@ -4,26 +4,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Referências do DOM
     const formOnibus = document.getElementById('form-layout-onibus');
-    console.log('1. Elemento do formulário encontrado:', formOnibus); // Log de depuração
+    console.log('1. Elemento do formulário encontrado:', formOnibus);
 
     const nomeMapaInput = document.getElementById('nome_mapa_input');
-    console.log('1a. Elemento nomeMapaInput encontrado:', nomeMapaInput); // Log de depuração
+    console.log('1a. Elemento nomeMapaInput encontrado:', nomeMapaInput);
 
     // Referências dos botões principais
     const btnSaveChanges = document.getElementById('btn-save-changes');
     const btnSaveAsNew = document.getElementById('btn-save-as-new');
+    const btnLoadMap = document.getElementById('btn-load-map');
     const saveActionInput = document.getElementById('save_action_input');
 
+    // NOVA REFERÊNCIA: Contêiner da lista de mapas
+    const mapListDropdown = document.getElementById('map-list-dropdown');
 
-    // Referências do menu de contexto e seus botões (DEVE-SE VERIFICAR SE EXISTEM!)
+    // Referências do menu de contexto e seus botões
     const contextMenu = document.getElementById('seat-context-menu');
     const toggleStatusBtn = document.getElementById('toggle-status-btn');
-    const removeSeatBtnContextMenu = document.getElementById('remove-seat-btn'); // RENOMEADO para evitar conflito de nome
+    const removeSeatBtnContextMenu = document.getElementById('remove-seat-btn');
     const cancelMenuBtn = document.getElementById('cancel-menu-btn');
 
-    console.log('toggleStatusBtn:', toggleStatusBtn); // Log de depuração
-    console.log('removeSeatBtn (do menu):', removeSeatBtnContextMenu); // Log de depuração (agora com nome diferente)
-    console.log('cancelMenuBtn:', cancelMenuBtn); // Log de depuração
+    console.log('toggleStatusBtn:', toggleStatusBtn);
+    console.log('removeSeatBtn (do menu):', removeSeatBtnContextMenu);
+    console.log('cancelMenuBtn:', cancelMenuBtn);
 
 
     // Outras referências
@@ -99,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function hideContextMenu() {
-        if (contextMenu && contextMenu.style.display === 'block') { // VERIFICA SE contextMenu EXISTE
+        if (contextMenu && contextMenu.style.display === 'block') {
             contextMenu.style.display = 'none';
         }
         currentEditingSeatTd = null;
@@ -126,6 +129,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     }
 
+    // --- Função para buscar e renderizar a lista de mapas (NOVA) ---
+    async function fetchAndRenderMapList() {
+        try {
+            const response = await fetch('carregar_layout.php?action=list');
+            const result = await response.json();
+
+            mapListDropdown.innerHTML = ''; // Limpa a lista existente
+
+            if (result.success && result.maps && result.maps.length > 0) {
+                result.maps.forEach(map => {
+                    const listItem = document.createElement('a');
+                    listItem.classList.add('dropdown-item');
+                    listItem.href = '#'; // Evita navegação real
+                    listItem.textContent = map.name;
+                    listItem.dataset.mapId = map.id; // Armazena o ID no data attribute
+                    mapListDropdown.appendChild(listItem);
+                });
+                mapListDropdown.classList.add('show'); // Mostra o dropdown
+            } else {
+                const noMapsItem = document.createElement('span');
+                noMapsItem.classList.add('dropdown-item-text');
+                noMapsItem.textContent = result.message || 'Nenhum mapa salvo encontrado.';
+                mapListDropdown.appendChild(noMapsItem);
+                mapListDropdown.classList.add('show');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar lista de mapas:', error);
+            showMessage('Erro ao carregar lista de mapas. Tente novamente.', false);
+            mapListDropdown.classList.remove('show');
+        }
+    }
 
     // --- Inicialização da interface (aplicar estado carregado do DB) ---
     desabilitadosAtualmente.forEach(seatNum => {
@@ -157,12 +191,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Listeners de Eventos ---
 
-    // Listener global para fechar o menu de contexto ao clicar fora
-    // e para renomear assentos.
+    // Listener global para fechar o menu de contexto e a lista de mapas ao clicar fora
     document.addEventListener('click', (event) => {
-        // Se contextMenu existe, aplica lógica de hideContextMenu
         if (contextMenu && contextMenu.style.display === 'block' && !contextMenu.contains(event.target) && event.target !== currentEditingSeatTd) {
             hideContextMenu();
+        }
+        // Esconde o dropdown da lista de mapas se o clique não foi no input ou no próprio dropdown
+        if (mapListDropdown.classList.contains('show') && event.target !== nomeMapaInput && !mapListDropdown.contains(event.target)) {
+            mapListDropdown.classList.remove('show');
         }
 
         // Lógica para renomear assentos
@@ -208,13 +244,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (layoutWrapper) {
         layoutWrapper.addEventListener('click', (event) => {
             let target = event.target;
-            if (contextMenu && contextMenu.contains(target)) return; // VERIFICA SE contextMenu EXISTE
+            if (contextMenu && contextMenu.contains(target)) return;
 
             if (target.classList.contains('seat-number') && target.parentElement.classList.contains('seat')) {
                 target = target.parentElement;
             }
 
-            if (contextMenu && contextMenu.style.display === 'block' && target !== currentEditingSeatTd && !target.classList.contains('add-door-btn')) { // VERIFICA SE contextMenu EXISTE
+            if (contextMenu && contextMenu.style.display === 'block' && target !== currentEditingSeatTd && !target.classList.contains('add-door-btn')) {
                 hideContextMenu();
             }
 
@@ -231,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 toggleStatusBtn.textContent = target.classList.contains('desabilitado') ? 'Habilitar Assento' : 'Desabilitar Assento';
             }
             else if (event.target.classList.contains('btn-add-seat')) {
-                console.log('Botão "+" clicado!'); // DEBUG LOG
+                console.log('Botão "+" clicado!');
                 const seatTd = event.target.closest('td');
                 if (seatTd && seatTd.classList.contains('espaco')) {
                     const newSeatNumber = prompt("Digite o número para este assento:", "");
@@ -244,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 return;
                             }
 
-                            seatTd.className = 'seat habilitado';
+                            seatTd.className = 'seat habilitado'; // Assume que um novo assento é livre
                             seatTd.dataset.seatNumber = parsedNumber;
                             seatTd.innerHTML = `
                                 <span class='seat-number'>${parsedNumber}</span>
@@ -261,14 +297,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             } else if (event.target.classList.contains('btn-remove-seat')) {
-                console.log('Botão "-" clicado!'); // DEBUG LOG
+                console.log('Botão "-" clicado!');
                 const seatTd = event.target.closest('td');
                 if (seatTd && seatTd.classList.contains('seat') && seatTd.dataset.seatNumber) {
                     const seatNumber = seatTd.dataset.seatNumber;
                     if (confirm(`Tem certeza que deseja remover o assento ${seatNumber}?`)) {
-                        seatTd.className = 'espaco';
+                        seatTd.className = 'espaco'; // Remove classe 'seat' e adiciona 'espaco'
                         seatTd.removeAttribute('data-seat-number');
-                        seatTd.querySelector('.seat-number')?.remove();
+                        seatTd.querySelector('.seat-number')?.remove(); // Remove o span do número
 
                         const numRemoved = parseInt(seatNumber, 10);
                         const indexInArray = desabilitadosAtualmente.indexOf(numRemoved);
@@ -277,20 +313,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             atualizarInputDesabilitados();
                         }
 
-                        if (!seatTd.querySelector('.seat-actions')) {
-                            seatTd.innerHTML += `
-                                <div class='seat-actions'>
-                                    <button type='button' class='btn-add-seat' title='Adicionar Assento'>+</button>
-                                    <button type='button' class='btn-remove-seat' title='Remover Assento'>-</button>
-                                </div>
-                            `;
-                        } else {
-                             const existingActionsDiv = seatTd.querySelector('.seat-actions');
-                             existingActionsDiv.innerHTML = `
+                        // Recriar os botões de ação para o espaço vazio
+                        seatTd.innerHTML = `
+                            <div class='seat-actions'>
                                 <button type='button' class='btn-add-seat' title='Adicionar Assento'>+</button>
                                 <button type='button' class='btn-remove-seat' title='Remover Assento'>-</button>
-                             `;
-                        }
+                            </div>
+                        `;
                     }
                 }
             } else if (target.classList.contains('add-door-btn') && target.dataset.insertAfterSeat && target.dataset.doorIndex) {
@@ -323,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DOS BOTÕES DO MENU DE CONTEXTO ---
-    if (toggleStatusBtn) { // ADICIONA VERIFICAÇÃO
+    if (toggleStatusBtn) {
         toggleStatusBtn.addEventListener('click', () => {
             if (!currentEditingSeatTd) return;
             const seatNumberStr = currentEditingSeatTd.dataset.seatNumber;
@@ -357,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (removeSeatBtnContextMenu) { // ADICIONA VERIFICAÇÃO, USA O NOVO NOME DA VARIAVEL
+    if (removeSeatBtnContextMenu) {
         removeSeatBtnContextMenu.addEventListener('click', () => {
             if (!currentEditingSeatTd) return;
 
@@ -367,31 +396,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            currentEditingSeatTd.className = 'espaco';
+            currentEditingSeatTd.className = 'espaco'; // Remove classe 'seat' e adiciona 'espaco'
             currentEditingSeatTd.removeAttribute('data-seat-number');
-            currentEditingSeatTd.querySelector('.seat-number')?.remove();
+            currentEditingSeatTd.querySelector('.seat-number')?.remove(); // Remove o span do número
 
-            if (!currentEditingSeatTd.querySelector('.seat-actions')) {
-                 currentEditingSeatTd.innerHTML += `
-                    <div class='seat-actions'>
-                        <button type='button' class='btn-add-seat' title='Adicionar Assento'>+</button>
-                        <button type='button' class='btn-remove-seat' title='Remover Assento'>-</button>
-                    </div>
-                `;
-            }
-
-            const seatNumber = parseInt(seatNumText, 10);
-            const indexInArray = desabilitadosAtualmente.indexOf(seatNumber);
+            const numRemoved = parseInt(seatNumText, 10);
+            const indexInArray = desabilitadosAtualmente.indexOf(numRemoved);
             if (indexInArray > -1) {
                 desabilitadosAtualmente.splice(indexInArray, 1);
                 atualizarInputDesabilitados();
             }
 
+            // Recriar os botões de ação para o espaço vazio
+            currentEditingSeatTd.innerHTML = `
+                <div class='seat-actions'>
+                    <button type='button' class='btn-add-seat' title='Adicionar Assento'>+</button>
+                    <button type='button' class='btn-remove-seat' title='Remover Assento'>-</button>
+                </div>
+            `;
+
             hideContextMenu();
         });
     }
 
-    if (cancelMenuBtn) { // ADICIONA VERIFICAÇÃO
+    if (cancelMenuBtn) {
         cancelMenuBtn.addEventListener('click', () => {
             hideContextMenu();
         });
@@ -401,38 +429,87 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA DOS BOTÕES DE SUBMISSÃO (NOVO E SALVAR) ---
     if (btnSaveChanges) {
         btnSaveChanges.addEventListener('click', () => {
-            saveActionInput.value = 'update'; // Define a ação como 'update'
+            saveActionInput.value = 'update';
         });
     }
     if (btnSaveAsNew) {
         btnSaveAsNew.addEventListener('click', () => {
-            saveActionInput.value = 'insert_new'; // Define a ação como 'insert_new'
+            saveActionInput.value = 'insert_new';
         });
     }
+
+    // --- LÓGICA DO BOTÃO CARREGAR MAPA ---
+    if (btnLoadMap) {
+        btnLoadMap.addEventListener('click', async () => {
+            const mapName = nomeMapaInput.value.trim();
+            if (!mapName) {
+                showMessage("Por favor, digite o nome do mapa que deseja carregar.", false);
+                return;
+            }
+
+            try {
+                const response = await fetch(`carregar_layout.php?name=${encodeURIComponent(mapName)}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // Recarrega a página com o ID do layout para que o PHP o redesenhe
+                    showMessage(`Layout "${result.name}" carregado com sucesso! Recarregando...`, true);
+                    setTimeout(() => {
+                        window.location.href = `index.php?layout_id=${result.id}`;
+                    }, 1000);
+                } else {
+                    showMessage(result.message, false);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar layout:', error);
+                showMessage('Ocorreu um erro ao carregar o layout. Tente novamente.', false);
+            }
+        });
+    }
+
+    // --- LÓGICA: Exibir lista de mapas ao clicar no input (NOVA) ---
+    if (nomeMapaInput) {
+        nomeMapaInput.addEventListener('focus', () => { // ou 'click'
+            fetchAndRenderMapList();
+        });
+    }
+
+    // Lógica: Preencher input e esconder dropdown ao clicar em um item da lista (NOVA)
+    if (mapListDropdown) {
+        mapListDropdown.addEventListener('click', (event) => {
+            const target = event.target;
+            if (target.classList.contains('dropdown-item')) {
+                nomeMapaInput.value = target.textContent; // Preenche o input
+                mapListDropdown.classList.remove('show'); // Esconde a lista
+                // Opcional: Você pode armazenar o ID do mapa selecionado em um hidden input aqui se precisar
+                // layoutIdInput.value = target.dataset.mapId;
+            }
+        });
+    }
+
 
     // --- Submissão do formulário via AJAX ---
     if (formOnibus) {
         formOnibus.addEventListener('submit', async (event) => {
-            console.log('2. Evento de submit do formulário disparado.'); // Log de depuração
-            event.preventDefault(); // Impede o envio tradicional do formulário por padrão
+            console.log('2. Evento de submit do formulário disparado.');
+            event.preventDefault();
 
-            const currentSaveAction = saveActionInput.value; // Obtém a ação selecionada
+            const currentSaveAction = saveActionInput.value;
 
-            // Confirmação antes de salvar
             if (currentSaveAction === 'update') {
                 if (!confirm("Tem certeza que deseja SALVAR as alterações neste layout?")) {
-                    return; // Aborta a submissão se o usuário cancelar
+                    return;
                 }
             } else if (currentSaveAction === 'insert_new') {
                 if (!confirm("Tem certeza que deseja CRIAR um NOVO layout com essas configurações?")) {
-                    return; // Aborta a submissão se o usuário cancelar
+                    return;
                 }
             }
 
             const nomeMapa = nomeMapaInput.value.trim();
             if (!nomeMapa) {
                 showMessage("O nome do mapa é obrigatório.", false);
-                return; // Impede a submissão se o nome estiver vazio
+                return;
             }
 
             const formData = new FormData(formOnibus);
